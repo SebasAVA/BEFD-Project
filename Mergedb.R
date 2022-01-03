@@ -16,18 +16,19 @@ completeFun <- function(data, desiredCols) {
 }
 
 #Años de lectura
-Años <- c(2003,2004,2005, 2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019)
-Años_VBInt <- c(2003,2004,2008,2009,2011,2012,2013,2014,2015,2016,2017)
-Años_CBInt <- c(2003,2008,2009,2011,2012,2013,2014,2015,2016,2017)
+Años <- c(2003,2004,2005, 2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021)
+Años_VBInt <- c(2003,2004,2008,2009,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020)
+Años_CBInt <- c(2003,2008,2009,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020)
 #Lectura Precio bolsa Internacional
 PB_Int <- data.frame(Fecha=as.Date(character()),
                      variable=factor(), 
                      value=numeric()) 
 
-for (i in 1:17) {
+for (i in 1:18) {
   
   PB_A <- read_excel(paste("Precio Bolsa/Precio_Bolsa_Internacional_($kwh)_",Años[i],".xlsx", sep = ""),skip=2)
   PB_A$Version <- NULL
+  PB_A$Versión <- NULL
   PB_A$Fecha <- as.Date(PB_A$Fecha, "%Y-%m-%d")
   colnames(PB_A) <- c("Fecha","H0","H1","H2","H3","H4","H5","H6","H7","H8","H9","H10","H11","H12","H13","H14","H15","H16","H17","H18","H19","H20","H21","H22","H23")
   PB_A <- as.data.frame(PB_A)
@@ -43,9 +44,10 @@ PB_Nac <- data.frame(Fecha=as.Date(character()),
                      variable=factor(), 
                      value=numeric()) 
 
-for (i in 1:17) {
+for (i in 1:18) {
   PB_A <- read_excel(paste("Precio Bolsa/Precio_Bolsa_Nacional_($kwh)_",Años[i],".xlsx", sep = ""),skip=2)
   PB_A$Version <- NULL
+  PB_A$Versión <- NULL
   PB_A$X__1 <- NULL
   PB_A$X__2 <- NULL
   PB_A$Fecha <- as.Date(PB_A$Fecha, "%Y-%m-%d")
@@ -74,10 +76,11 @@ meltVB <- aggregate(value~Fecha+variable, meltVB, sum)
 meltVB <- meltVB[order(as.Date(meltVB$Fecha, format="%Y-%m-%d")),]
 VB_Nac <- meltVB
 
-for (i in 2:14) {
+for (i in 2:18) {
   VB_A <- read_excel(paste("Ventas Bolsa Energia/Ventas_Bolsa_Nacional_(kwh)_",Años[i],".xlsx", sep = ""),skip=2)
   VB_A <- as.data.frame(VB_A)
   VB_A$Version <- NULL
+  VB_A$Versión <- NULL
   VB_A <- completeFun(VB_A,"Fecha")
   colnames(VB_A) <- c("Fecha","Agente","H0","H1","H2","H3","H4","H5","H6","H7","H8","H9","H10","H11","H12","H13","H14","H15","H16","H17","H18","H19","H20","H21","H22","H23")
   VB_A$Agente <- NULL
@@ -105,10 +108,11 @@ meltVB <- meltVB[order(as.Date(meltVB$Fecha, format="%Y-%m-%d")),]
 rownames(meltVB) <- NULL
 VB_Int <- meltVB
 
-for (i in 2:10) {
+for (i in 2:13) {
   VB_A <- read_excel(paste("Ventas Bolsa Energia/Ventas_Bolsa_Internacional_(kwh)_",Años_VBInt[i],".xlsx", sep = ""),skip=2)
   VB_A <- as.data.frame(VB_A)
   VB_A$Version <- NULL
+  VB_A$Versión <- NULL
   names(VB_A)[1]<-"Fecha"
   names(VB_A)[2]<-"Agente"
   VB_A <- completeFun(VB_A,"Fecha")
@@ -138,10 +142,11 @@ meltVB <- meltVB[order(as.Date(meltVB$Fecha, format="%Y-%m-%d")),]
 rownames(meltVB) <- NULL
 CB_Nac <- meltVB
 
-for (i in 2:14) {
+for (i in 2:18) {
   CB_A <- read_excel(paste("Compras Bolsa Energia/Compras_Bolsa_Nacional_(kWh)_",Años[i],".xlsx", sep = ""),skip=2)
   CB_A <- as.data.frame(CB_A)
   CB_A$Version <- NULL
+  CB_A$Versión <- NULL
   CB_A <- completeFun(CB_A,"Fecha")
   names(CB_A)[1]<-"Fecha"
   names(CB_A)[2]<-"Agente"
@@ -170,7 +175,7 @@ meltVB <- meltVB[order(as.Date(meltVB$Fecha, format="%Y-%m-%d")),]
 rownames(meltVB) <- NULL
 CB_Int <- meltVB
 
-for (i in 2:9) {
+for (i in 2:12) {
   CB_A <- read_excel(paste("Compras Bolsa Energia/Compras_Bolsa_Internacional_(kWh)_",Años_CBInt[i],".xlsx", sep = ""),skip=2)
   CB_A <- as.data.frame(CB_A)
   CB_A$Version <- NULL
@@ -205,10 +210,12 @@ rownames(meltVB) <- NULL
 CastO <- dcast(meltVB, Fecha + variable ~ Tipo,fun.aggregate = sum)
 OfertaG <- CastO
 
-for (i in 2:14) {
+for (i in 2:18) {
   O_A <- read_excel(paste("Oferta/Generacion_(kWh)_",Años[i],".xlsx", sep = ""),skip=2)
   O_A <- as.data.frame(O_A)
   O_A$Version <- NULL
+  O_A$`Código Recurso` <- NULL
+  O_A$Clasificación <- NULL
   O_A$Recurso <- NULL
   O_A$Combustible <- NULL
   O_A$`Tipo Despacho`<- NULL
@@ -228,34 +235,74 @@ for (i in 2:14) {
 OfertaG$variable <- paste("H",OfertaG$variable,sep="")
 
 
-#Lectura demanda por distribuidor
-DD_A <- read_excel(paste("Demanda/Demanda_Comercial_Por_Distribuidor_","2003",".xlsx", sep = ""),skip=2)
+# #Lectura demanda por distribuidor
+# DD_A <- read_excel(paste("Demanda/Demanda_Comercial_Por_Distribuidor_","2003",".xlsx", sep = ""),skip=2)
+# DD_A <- as.data.frame(DD_A)
+# DD_A$Version <- NULL
+# DD_A$X__1 <- NULL
+# DD_A <- completeFun(DD_A,"Fecha")
+# names(DD_A)[1]<-"Fecha"
+# names(DD_A)[2]<-"Agente"
+# meltVB <- melt(DD_A, id=c("Fecha","Agente"))
+# meltVB <- meltVB[order(as.Date(meltVB$Fecha, format="%Y-%m-%d")),]
+# rownames(meltVB) <- NULL
+# CastDD <- dcast(meltVB, Fecha + variable ~ Agente)
+# DDist <- CastDD
+# 
+# for (i in 2:14) {
+#   DD_A <- read_excel(paste("Demanda/Demanda_Comercial_Por_Distribuidor_",Años[i],".xlsx", sep = ""),skip=2)
+#   DD_A <- as.data.frame(DD_A)
+#   DD_A$Version <- NULL
+#   DD_A <- completeFun(DD_A,"Fecha")
+#   names(DD_A)[1]<-"Fecha"
+#   names(DD_A)[2]<-"Agente"
+#   meltVB <- melt(DD_A, id=c("Fecha","Agente"))
+#   meltVB <- meltVB[order(as.Date(meltVB$Fecha, format="%Y-%m-%d")),]
+#   rownames(meltVB) <- NULL
+#   CastDD <- dcast(meltVB, Fecha + variable ~ Agente)
+#   DDist <- rbind.fill(DDist,CastDD)
+# }
+# DDist$variable <- paste("H",DDist$variable,sep="")
+
+
+
+#Lectura demanda
+DD_A <- read_excel(paste("Demanda/Demanda_Comercial_Por_Comercializador_","2003SEM","1",".xlsx", sep = ""),skip=2)
 DD_A <- as.data.frame(DD_A)
 DD_A$Version <- NULL
 DD_A$X__1 <- NULL
+DD_A$Mercado <- NULL
+DD_A$`Codigo Comercializador` <- NULL
 DD_A <- completeFun(DD_A,"Fecha")
 names(DD_A)[1]<-"Fecha"
-names(DD_A)[2]<-"Agente"
-meltVB <- melt(DD_A, id=c("Fecha","Agente"))
+meltVB <- melt(DD_A, id=c("Fecha"))
 meltVB <- meltVB[order(as.Date(meltVB$Fecha, format="%Y-%m-%d")),]
 rownames(meltVB) <- NULL
-CastDD <- dcast(meltVB, Fecha + variable ~ Agente)
+CastDD <- aggregate(value~Fecha+variable, meltVB, sum)
 DDist <- CastDD
 
-for (i in 2:14) {
-  DD_A <- read_excel(paste("Demanda/Demanda_Comercial_Por_Distribuidor_",Años[i],".xlsx", sep = ""),skip=2)
+for (i in 2:18) {
+  for(j in 1:2)
+  {
+  DD_A <- read_excel(paste("Demanda/Demanda_Comercial_Por_Comercializador_",Años[i],"SEM",j,".xlsx", sep = ""),skip=2)
   DD_A <- as.data.frame(DD_A)
   DD_A$Version <- NULL
+  DD_A$X__1 <- NULL
+  DD_A$Mercado <- NULL
+  DD_A$Versión <- NULL
+  DD_A$`Codigo Comercializador` <- NULL
   DD_A <- completeFun(DD_A,"Fecha")
   names(DD_A)[1]<-"Fecha"
-  names(DD_A)[2]<-"Agente"
-  meltVB <- melt(DD_A, id=c("Fecha","Agente"))
+  meltVB <- melt(DD_A, id=c("Fecha"))
   meltVB <- meltVB[order(as.Date(meltVB$Fecha, format="%Y-%m-%d")),]
   rownames(meltVB) <- NULL
-  CastDD <- dcast(meltVB, Fecha + variable ~ Agente)
+  CastDD <- aggregate(value~Fecha+variable, meltVB, sum)
   DDist <- rbind.fill(DDist,CastDD)
+  }
 }
 DDist$variable <- paste("H",DDist$variable,sep="")
+DDist <- DDist[order(as.Date(DDist$Fecha, format="%Y-%m-%d")),]
+
 
 #Hidrologia APoRTES M3/s
 ADH <- read_excel(paste("Hidrologia/Aportes_Diario_",Años[1],".xlsx", sep = ""),skip=2)
@@ -269,7 +316,7 @@ ADH[is.na(ADH)] <- 0
 CastADH <- dcast(ADH, Fecha ~ Region,fun.aggregate = sum)
 AporteM3 <- CastADH
 
-for (i in 2:14) {
+for (i in 2:18) {
   ADH <- read_excel(paste("Hidrologia/Aportes_Diario_",Años[i],".xlsx", sep = ""),skip=2)
   ADH <- as.data.frame(ADH)
   ADH$`Nombre Río` <- NULL
@@ -297,7 +344,7 @@ ADH[is.na(ADH)] <- 0
 CastADH <- dcast(ADH, Fecha ~ Region,fun.aggregate = sum)
 AporteMm3 <- CastADH
 
-for (i in 2:14) {
+for (i in 2:18) {
   ADH <- read_excel(paste("Hidrologia/Reservas_Diario_",Años[i],".xlsx", sep = ""),skip=2)
   ADH <- as.data.frame(ADH)
   ADH <- as.data.frame(ADH)
@@ -325,7 +372,7 @@ ADH[is.na(ADH)] <- 0
 CastADH <- dcast(ADH, Fecha ~ Region,fun.aggregate = sum)
 AportekWh <- CastADH
 
-for (i in 2:14) {
+for (i in 2:18) {
   ADH <- read_excel(paste("Hidrologia/Aportes_Diario_",Años[i],".xlsx", sep = ""),skip=2)
   ADH <- as.data.frame(ADH)
   ADH$`Nombre Río` <- NULL
@@ -346,10 +393,6 @@ colnames(AportekWh) <- c("Fecha", "ANTIOQUIAkWh","CARIBEkWh","CENTROkWh","ORIENT
 
 rm(CastDD,CastO,CB_A,DD_A,meltPB,meltVB,O_A,PB_A,VB_A)
 
-#lectura precio Dolar
-Dolar <- read_excel("Dolar/Dolar_Historico.xlsx",skip=7)
-
-
 
 #Creacion de Key para unir data frames
 CB_Nac$FH <- paste(CB_Nac$Fecha,CB_Nac$variable,sep="")
@@ -367,6 +410,7 @@ colnames(PB_Int)[3] <- "PB_Int"
 colnames(PB_Nac)[3] <- "PB_Nac"
 colnames(VB_Int)[3] <- "VB_Int"
 colnames(VB_Nac)[3] <- "VB_Nac"
+colnames(DDist)[3] <- "Demanda"
 
 
 
@@ -397,29 +441,19 @@ EE <- join(EE,PB_Int)
 EE <- join(EE,PB_Nac)
 EE <- join(EE,VB_Int)
 EE <- join(EE,VB_Nac)
-#EE <- join(EE,AporteM3)
+EE <- join(EE,AporteM3)
 EE <- join(EE,AporteMm3)
 EE <- join(EE,AportekWh)
 
-
-EE <- join(EE,Dolar)
-
-rm(ADH,AportekWh,AporteM3,CastADH,CB_Int,CB_Nac,DDist,OfertaG,PB_Int,PB_Nac,VB_Nac,VB_Int)
-
-
-EEcor <- EE
-
-EEcor$Fecha <- NULL
-EEcor$FH <- NULL
-EEcor$variable <- NULL
+rm(ADH,AportekWh,AporteMm3,AporteM3,CastADH,CB_Int,CB_Nac,DDist,OfertaG,PB_Int,PB_Nac,VB_Nac,VB_Int)
 
 
 #NewDataPBN <- na.omit(PB_Nac)
 #time <- time[-c(length(time-1)) ]
-time <- seq(ISOdate(2003,01,01), ISOdate(2017,01,01), "hour")
-time <- time[-c(length(time-1)) ]
+#time <- seq(ISOdate(2003,01,01), ISOdate(2017,01,01), "hour")
+#time <- time[-c(length(time-1)) ]
 
-EE$New <- time
+#EE$New <- time
 
 
 
